@@ -16,7 +16,6 @@ class PubgMatch {
     }
     /**
      * 
-     * 
      * @returns 
      * @memberof PubgMatch
      */

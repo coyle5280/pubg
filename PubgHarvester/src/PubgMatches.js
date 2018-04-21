@@ -2,9 +2,9 @@ const Request = require('request-promise');
 
 class PubgMatches {
     /**
-     * Creates an instance of PubgPlayer.
+     * Creates an instance of PubgMatches.
      * @param {any} options 
-     * @memberof PubgPlayer
+     * @memberof PubgMatches
      */
     constructor (playerIds) {
         this._playerIds = playerIds
@@ -14,8 +14,7 @@ class PubgMatches {
     }
     /**
      * 
-     * 
-     * @memberof PubgPlayer
+     * @memberof PubgMatches
      */
     run () {
         return new Promise(async (resolve, reject) => {
