@@ -12,6 +12,7 @@ class PubgMatch {
         this._playerIDs = options.playerIds
         this._matchQueryData
         this._isNew = false
+        this._timeout = 1
     }
     /**
      * 
@@ -22,18 +23,21 @@ class PubgMatch {
     run () {
         return new Promise(async (resolve, reject)=>{
             try {
+                this._client = new Client()
+                await this._client.connect()
                 await this.isNew()
                 if (this._isNew) {
+                    this._timeout = 10000
                     await this.loadMatchData()
                     await this.saveMatchData(this._matchQueryData)
                 } 
             } catch (error) {
                 reject(error)
             } finally {
-                // await this._client.client.end()
+                await this._client.end()
                 setTimeout(() => {
                     resolve()
-                }, 10000)
+                }, this._timeout)
             }
         })
     }
@@ -44,17 +48,14 @@ class PubgMatch {
      */
     isNew () {
         return new Promise(async (resolve, reject) => {
-            const client = new Client()
             try {
                 const query = `SELECT match_id from PUBG.match where match_id = '${this._matchId}'`
-                await client.connect()
                 const res = await this._client.query(query)
                 let [match] = res.rows
                 this._isNew = (!match) ? true : false
             } catch (error) {
                 reject(error)
             } finally {
-                await client.end()
                 resolve() 
             }
         })
@@ -102,7 +103,7 @@ class PubgMatch {
         included.forEach(item => {
             if (
                 item.type === 'participant' && 
-                this._playerIDs.indexOf(item.id) !== -1
+                this._playerIDs.indexOf(item.attributes.stats.playerId) !== -1
             ) {
                 this._matchQueryData.push(this.buildPlayerQuery(item))
             } else if (
@@ -136,7 +137,7 @@ class PubgMatch {
             query: `INSERT INTO pubg.match_record (
                 dbnos, assists, boosts, damage_dealt, death_type, head_shot_kills,
                 heals, kill_place, kill_points, kill_points_delta, kill_streaks, 
-                kills,kills,last_win_points,longest_kill,most_damage,
+                kills,last_kill_points, last_win_points,longest_kill,most_damage,
                 name,player_id,revives,ride_distance,road_kills,team_kills,time_survived,vehicle_destroys,
                 walk_distance,weapons_acquired,win_place,win_points,win_points_delta, match_id
             ) VALUES (
@@ -179,21 +180,16 @@ class PubgMatch {
      */
     saveMatchData () {
         return new Promise(async (resolve, reject) => {
-            const client = new Client()
-            await client.connect()
-            // note: we don't try/catch this because if connecting throws an exception
-            // we don't need to dispose of the client (it will be undefined)
             try {
-                await client.query('BEGIN')
+                await this._client.query('BEGIN')
                 this._matchQueryData.forEach(async queryObject => {
-                    await client.query(queryObject.query, queryObject.values)
+                    await this._client.query(queryObject.query, queryObject.values)
                 })
-                await client.query('COMMIT')
+                await this._client.query('COMMIT')
             } catch (e) {
-                await client.query('ROLLBACK')
+                await this._client.query('ROLLBACK')
                 reject(e)
             } finally {
-                await client.end()
                 resolve ()
             }
         })
