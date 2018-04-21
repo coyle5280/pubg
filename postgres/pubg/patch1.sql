@@ -59,3 +59,6 @@ WITH (
 
 ALTER TABLE pubg.match
     OWNER to postgres;
+
+    Alter table pubg.match_record
+ALTER COLUMN ride_distance TYPE double precision;
