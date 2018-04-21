@@ -1,6 +1,6 @@
 const Request = require('request-promise');
 
-class PubgPlayer {
+class PubgMatches {
     /**
      * Creates an instance of PubgPlayer.
      * @param {any} options 
@@ -47,4 +47,4 @@ class PubgPlayer {
     }
 }
 
-exports.PubgPlayer = PubgPlayer
+exports.PubgMatches = PubgMatches
