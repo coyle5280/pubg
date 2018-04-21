@@ -1,8 +1,8 @@
 require('dotenv').config()
 
 const { PubgMatch } = require('./src/PubgMatch')
-const { PubgPlayer } = require('./src/PubgPlayer')
-const { Logger } = require('./src/Logger')
+const { PubgMatches } = require('./src/PubgMatches')
+const { Logger } = require('../Logger/Logger')
 /**
  * 
  * 
@@ -17,8 +17,8 @@ async function Handler () {
             'account.d3a793b22577494b8ceb696c7e750ec0',
             'account.64e46c0605b940388f564660b65bf628'
         ]
-        const players = new PubgPlayer(playerIds)
-        const matches = await players.run()
+        const pubgMatches = new PubgMatches(playerIds)
+        const matches = await pubgMatches.run()
         
         const matchPromises = matches.map(matchId => {
             return new PubgMatch({matchId, playerIds})
