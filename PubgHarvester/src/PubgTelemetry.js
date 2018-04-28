@@ -238,6 +238,9 @@ class PubgTelemetry {
         if (this._PlayerPosition.length > 0) {
             this._PlayerPosition.forEach(this.playerPositionInsert.bind(this))
         }
+        if (this._GameState.length > 0) {
+            this._GameState.forEach(this.gameStateInsert.bind(this))
+        }
     }
 
     LogPlayerTakeDamage (record) {
@@ -256,6 +259,10 @@ class PubgTelemetry {
         if (this._PlayerIDs.indexOf(record.character.accountId) !== -1) {
             this._PlayerPosition.push(record)
         }
+    }
+
+    LogGameStatePeriodic (record) {
+        this._GameState.push(record)
     }
 
     playerPositionInsert (record) {
@@ -285,6 +292,63 @@ class PubgTelemetry {
             '${_D}',
             '${uuid()}'
         )`)
+    }
+
+    gameStateInsert (record) {
+        const {
+            elapsedTime,
+            numAliveTeams,
+            numJoinPlayers,
+            numStartPlayers,
+            numAlivePlayers,
+            safetyZonePosition,
+            safetyZoneRadius,
+            poisonGasWarningPosition,
+            poisonGasWarningRadius,
+            redZonePosition,
+            redZoneRadius
+        } = record.gameState
+        this._Queries.push(`
+            INSERT INTO pubg.match_game_state (
+                match_id,
+                elapsed_time,
+                num_alive_teams,
+                num_join_players,
+                num_start_players,
+                num_alive_players,
+                safety_zone_position_x,
+                safety_zone_position_y,
+                safety_zone_position_z,
+                safety_zone_radius,
+                poison_gas_warning_position,
+                poison_gas_warning_radius,
+                red_zone_position_x,
+                red_zone_position_y,
+                red_zone_position_z,
+                red_zone_radius,
+                game_state_time,
+                game_state_version
+            ) VALUES (
+                '${this._MatchId}',
+                ${elapsedTime},
+                ${numAliveTeams},
+                ${numJoinPlayers},
+                ${numStartPlayers},
+                ${numAlivePlayers},
+                ${safetyZonePosition.x},
+                ${safetyZonePosition.y},
+                ${safetyZonePosition.z},
+                ${safetyZoneRadius},
+                '${JSON.stringify(poisonGasWarningPosition)}',
+                ${poisonGasWarningRadius},
+                ${redZonePosition.x},
+                ${redZonePosition.y},
+                ${redZonePosition.z},
+                ${redZoneRadius},
+                '${record._D}',
+                ${record._V}
+            )
+        `)
     }
 
     processQueries () {
