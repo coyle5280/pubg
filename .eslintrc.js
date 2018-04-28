@@ -8,6 +8,7 @@ module.exports = {
         }
     },
     "globals": {
+        "Ext": true
     },
     "plugins": ["promise"],
     "rules": {
