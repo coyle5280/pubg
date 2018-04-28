@@ -1,3 +1,4 @@
+const { PubgTelemetry } = require('./PubgTelemetry')
 const { Client } = require('pg')
 const Request = require('request-promise')
 
@@ -13,6 +14,7 @@ class PubgMatch {
         this._matchQueryData
         this._isNew = false
         this._timeout = 1
+        this._TelemetryUrl
     }
     /**
      * 
@@ -21,6 +23,7 @@ class PubgMatch {
      */
     run () {
         return new Promise(async (resolve, reject)=>{
+            let error
             try {
                 this._client = new Client()
                 await this._client.connect()
@@ -29,13 +32,19 @@ class PubgMatch {
                     this._timeout = 10000
                     await this.loadMatchData()
                     await this.saveMatchData(this._matchQueryData)
+                    let telemetry = new PubgTelemetry({
+                        MatchId: this._matchId,
+                        PlayerIDs: this._playerIDs,
+                        Url: this._TelemetryUrl
+                    })
+                    await telemetry.run()
                 } 
-            } catch (error) {
-                reject(error)
+            } catch (e) {
+                error = e
             } finally {
                 await this._client.end()
                 setTimeout(() => {
-                    resolve()
+                    if (error) { reject(error) } else { resolve() }
                 }, this._timeout)
             }
         })
@@ -47,15 +56,16 @@ class PubgMatch {
      */
     isNew () {
         return new Promise(async (resolve, reject) => {
+            let error
             try {
                 const query = `SELECT match_id from PUBG.match where match_id = '${this._matchId}'`
                 const res = await this._client.query(query)
                 let [match] = res.rows
                 this._isNew = (!match) ? true : false
-            } catch (error) {
-                reject(error)
+            } catch (e) {
+                error = e
             } finally {
-                resolve() 
+                if (error) { reject(error) } else { resolve() }
             }
         })
     }
@@ -162,6 +172,7 @@ class PubgMatch {
             return match[key]
         })
         values.push(this._matchId, item.attributes.URL)
+        this._TelemetryUrl = item.attributes.URL
         return {
             query: `INSERT INTO pubg.match (
                 created_at,duration,game_mode,patch_version,shard_id,stats,tags,title_id,match_id,telemetry_url
@@ -179,6 +190,7 @@ class PubgMatch {
      */
     saveMatchData () {
         return new Promise(async (resolve, reject) => {
+            let error
             try {
                 await this._client.query('BEGIN')
                 this._matchQueryData.forEach(async queryObject => {
@@ -187,9 +199,9 @@ class PubgMatch {
                 await this._client.query('COMMIT')
             } catch (e) {
                 await this._client.query('ROLLBACK')
-                reject(e)
+                error = e
             } finally {
-                resolve ()
+                if (error) { reject(error) } else { resolve () }
             }
         })
     }
