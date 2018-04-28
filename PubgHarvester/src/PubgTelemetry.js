@@ -71,7 +71,8 @@ class PubgTelemetry {
                 damage_time,
                 damage_version,
                 attack_id,
-                attack_uuid
+                attack_uuid,
+                match_id
             ) VALUES (
                 '${attack.attacker.name}',
                 '${attack.attacker.accountId}',
@@ -99,7 +100,8 @@ class PubgTelemetry {
                 '${damage._D}',
                 ${damage._V},
                 ${attack.attackId},
-                '${uuid()}'
+                '${uuid()}',
+                '${this._MatchId}'
             )
         `
         this._Queries.push(query)
