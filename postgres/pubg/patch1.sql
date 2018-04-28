@@ -134,3 +134,36 @@ ALTER TABLE pubg.match_player_position
 
 ALTER TABLE pubg.match_player_position
     ADD PRIMARY KEY (match_position_uuid);
+
+ALTER TABLE pubg.match_attack_damage
+    ADD COLUMN match_id character varying(90) NOT NULL;
+
+CREATE TABLE pubg.match_game_state
+(
+    match_id character varying(90) COLLATE pg_catalog."default" NOT NULL,
+    elapsed_time bigint NOT NULL,
+    num_alive_teams bigint,
+    num_join_players bigint,
+    num_start_players bigint,
+    num_alive_players bigint,
+    safety_zone_position_x double precision,
+    safety_zone_position_y double precision,
+    safety_zone_position_z double precision,
+    safety_zone_radius double precision,
+    poison_gas_warning_position jsonb,
+    poison_gas_warning_radius double precision,
+    red_zone_position_x double precision,
+    red_zone_position_y double precision,
+    red_zone_position_z double precision,
+    red_zone_radius double precision,
+    game_state_time timestamp without time zone,
+    game_state_version bigint,
+    CONSTRAINT match_game_state_pkey PRIMARY KEY (match_id, elapsed_time)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE pubg.match_game_state
+    OWNER to postgres;
