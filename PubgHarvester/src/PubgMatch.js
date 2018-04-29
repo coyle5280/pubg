@@ -166,7 +166,7 @@ class PubgMatch {
     buildMatchQuery (data) {
         let {match, item} = data
         let keys = [
-            'createdAt','duration','gameMode','patchVersion','shardId','stats','tags','titleId'
+            'createdAt','duration','gameMode','patchVersion','shardId','stats','tags','titleId', 'mapName'
         ]
         let values = keys.map(key => {
             return match[key]
@@ -175,9 +175,9 @@ class PubgMatch {
         this._TelemetryUrl = item.attributes.URL
         return {
             query: `INSERT INTO pubg.match (
-                created_at,duration,game_mode,patch_version,shard_id,stats,tags,title_id,match_id,telemetry_url
+                created_at,duration,game_mode,patch_version,shard_id,stats,tags,title_id,map_name,match_id,telemetry_url
             ) VALUES (
-                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
+                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11
             )`,
             values
         }
