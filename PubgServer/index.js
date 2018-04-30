@@ -58,15 +58,123 @@ app.get('/match_records/:player_id', function (req, res) {
     })().catch(error => logger.log(error))
 })
 
-app.get('/record', function (req, res) {
+app.get('/records', function (req, res) {
     (async () => {
         const client = await pool.connect()
+        var results
         try {
-            let query = `select * from pubg.match_record mr 
-                Join pubg.match m on mr.match_id = m.match_id 
-                where ${req.query.field} = (select max(${req.query.field}) from pubg.match_record mr Join pubg.match m on mr.match_id = m.match_id where m.game_mode = ${req.query.mode})`
-            const response = await client.query(query, [])
-            res.json(response)
+            // let query = `select * from pubg.match_record mr 
+            //     Join pubg.match m on mr.match_id = m.match_id 
+            //     where ${req.query.field} = (select max(${req.query.field}) from pubg.match_record mr Join pubg.match m on mr.match_id = m.match_id where m.game_mode = ${req.query.mode})`
+            // const response = await client.query(query, [])
+            let record_data = {}
+            let query_kills = `
+                Select 
+                    mr.name as most_kill_name, 
+                    mr.kills
+                from 
+                    pubg.match_record mr
+                join 
+                    pubg.match m
+                on
+                    mr.match_id = m.match_id
+                where 
+                    mr.kills = (
+                        select 
+                            Max(kills) as kills 
+                        from 
+                            pubg.match_record
+                    )
+                And 
+                    m.game_mode = 'duo-fpp'
+                group by 
+                    mr.name,
+                    mr.kills
+            `
+            results = await client.query(query_kills, [])
+            record_data.kills = results.rows
+            let query_kills_all = `
+                Select 
+                    mr.name as most_kill_name, 
+                    mr.kills
+                from 
+                    pubg.match_record mr
+                join 
+                    pubg.match m
+                on
+                    mr.match_id = m.match_id
+                where 
+                    mr.kills = (
+                        select 
+                            Max(kills) as kills 
+                        from 
+                            pubg.match_record
+                    )
+                group by 
+                    mr.name,
+                    mr.kills
+            `
+            results = await client.query(query_kills_all, [])
+            record_data.kills_all = results.rows
+            let query_assists_all = `
+                Select 
+                    mr.name as most_kill_name, 
+                    mr.kills
+                from 
+                    pubg.match_record mr
+                join 
+                    pubg.match m
+                on
+                    mr.match_id = m.match_id
+                where 
+                    mr.kills = (
+                        select 
+                            Max(kills) as kills 
+                        from 
+                            pubg.match_record
+                    )
+                group by 
+                    mr.name,
+                    mr.kills
+            `
+            results = await client.query(query_assists_all, [])
+            record_data.kills_all = results.rows
+            let query_assists_duo = `
+                Select 
+                    mr.name as most_kill_name, 
+                    mr.kills
+                from 
+                    pubg.match_record mr
+                join 
+                    pubg.match m
+                on
+                    mr.match_id = m.match_id
+                where 
+                    mr.kills = (
+                        select 
+                            Max(kills) as kills 
+                        from 
+                            pubg.match_record
+                    )
+                And 
+                    m.game_mode = 'duo-fpp'
+                group by 
+                    mr.name,
+                    mr.kills
+            `
+            results = await client.query(query_assists_duo, [])
+            record_data.query_assists_duo =results.rows
+            let total_kills = `
+                Select SUM(kills) as total, name from pubg.match_record group By name order by total desc limit 1
+            `
+            results = await client.query(total_kills, [])
+            record_data.total_kills = results.rows
+            let head_shot_kills = `
+                Select SUM(head_shot_kills) as total, name from pubg.match_record group By name order by total desc limit 1
+            `
+            results = await client.query(head_shot_kills, [])
+            record_data.head_shot_kills = results.rows
+            res.json(record_data)
         } catch(error) {
             logger.log('error', error)
         } finally {
