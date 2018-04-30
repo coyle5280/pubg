@@ -141,8 +141,8 @@ app.get('/records', function (req, res) {
             record_data.kills_all = results.rows
             let query_assists_duo = `
                 Select 
-                    mr.name as most_kill_name, 
-                    mr.kills
+                    mr.name as name, 
+                    mr.assists
                 from 
                     pubg.match_record mr
                 join 
@@ -150,9 +150,9 @@ app.get('/records', function (req, res) {
                 on
                     mr.match_id = m.match_id
                 where 
-                    mr.kills = (
+                    mr.assists = (
                         select 
-                            Max(kills) as kills 
+                            Max(assists) as assists 
                         from 
                             pubg.match_record
                     )
@@ -160,7 +160,7 @@ app.get('/records', function (req, res) {
                     m.game_mode = 'duo-fpp'
                 group by 
                     mr.name,
-                    mr.kills
+                    mr.assists
             `
             results = await client.query(query_assists_duo, [])
             record_data.query_assists_duo =results.rows
@@ -174,7 +174,7 @@ app.get('/records', function (req, res) {
             `
             results = await client.query(head_shot_kills, [])
             record_data.head_shot_kills = results.rows
-            res.json(record_data)
+            res.json([record_data])
         } catch(error) {
             logger.log('error', error)
         } finally {
