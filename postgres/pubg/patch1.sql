@@ -60,8 +60,8 @@ WITH (
 ALTER TABLE pubg.match
     OWNER to postgres;
 
-    Alter table pubg.match_record
-ALTER COLUMN ride_distance TYPE double precision;
+Alter table pubg.match_record
+    ALTER COLUMN ride_distance TYPE double precision;
 
 
 CREATE TABLE pubg.match_attack_damage
@@ -167,3 +167,6 @@ TABLESPACE pg_default;
 
 ALTER TABLE pubg.match_game_state
     OWNER to postgres;
+
+ALTER TABLE pubg.match
+    ADD COLUMN map_name character varying(90);
