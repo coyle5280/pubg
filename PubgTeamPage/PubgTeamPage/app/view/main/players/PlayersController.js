@@ -7,6 +7,6 @@ Ext.define('PubgTeamPage.view.main.players.PlayersController', {
     extend: 'Ext.app.ViewController',
     
     playerSelect: function (DataViewModel, record) {
-        debugger
+        // debuggerdebugger
     }
 });
