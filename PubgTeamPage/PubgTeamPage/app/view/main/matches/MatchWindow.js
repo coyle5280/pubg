@@ -1,7 +1,7 @@
 Ext.define('PubgTeamPage.view.main.matches.MatchWindow', {
     controller:  'matchwindow',
     extend: 'Ext.window.Window',
-    height: 450,
+    height: 500,
     items: [{
         border: false,
         columns: [{
@@ -61,7 +61,7 @@ Ext.define('PubgTeamPage.view.main.matches.MatchWindow', {
             },
             height: '100%',
             itemSelector: 'div',
-            reference: 'playerStats',
+            reference: 'playerStatsAttack',
             tpl:  new Ext.XTemplate(`
                 <tpl for=".">
                     <tpl for="attackInfo">
@@ -84,7 +84,7 @@ Ext.define('PubgTeamPage.view.main.matches.MatchWindow', {
             },
             height: '100%',
             itemSelector: 'div',
-            reference: 'playerStats',
+            reference: 'playerStatsDefense',
             tpl:  new Ext.XTemplate(`
                 <tpl for=".">
                     <tpl for="defenseInfo">
