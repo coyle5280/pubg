@@ -96,3 +96,43 @@ And
 And
 	victim_id = 'account.b528e5b410294a45821dd8678d2acb9c'
 order by attack_time
+
+
+select 
+	SUM (kills) as totalKills, 
+	SUM(dbnos) as totalDbnpos, 
+	SUM(assists) as totalAssists, 
+	SUM(revives) as totalRevives, 
+	SUM(heals) as totalHeals, 
+	ROUND(SUM(ride_distance) as totalRideDistance, 2),
+	SUM(walk_distance) as totalWalkDistance,
+	SUM(weapons_acquired) as totalWeaponsAcquired,
+	SUM(road_kills) as totalRoadKills,
+	MAX(damage_dealt) as maxDamageDealtInGame,
+	MAX(longest_kill) as longestKill,
+	Max(kills) as mostKillsInGame,
+	Count(*) as totalMatches
+FROM
+	pubg.match_record
+Where
+	player_id = 'account.b528e5b410294a45821dd8678d2acb9c'
+
+
+Select 
+	SUM (kills) as total_kills, 
+	SUM(dbnos) as total_dbnpos, 
+	SUM(assists) as total_Assists, 
+	SUM(revives) as total_Revives, 
+	SUM(heals) as total_Heals, 
+	round(SUM(ride_distance)) as totalRideDistance,
+	round(SUM(walk_distance)) as total_Walk_Distance,
+	SUM(weapons_acquired) as total_Weapons_Acquired,
+	SUM(road_kills) as total_Road_Kills,
+	MAX(damage_dealt) as max_Damage_Dealt_In_Game,
+	MAX(longest_kill) as longest_Kill,
+	Max(kills) as most_Kills_In_Game,
+	Count(*) as total_Matches
+FROM
+	pubg.match_record
+Where
+	player_id = 'account.b528e5b410294a45821dd8678d2acb9c'
