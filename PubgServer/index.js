@@ -1,4 +1,5 @@
 require('dotenv').config()
+require('require-sql');
 const express = require('express')
 const app = express()
 const {Pool} = require('pg')
@@ -7,6 +8,9 @@ const { Logger } = require('../Logger/Logger')
 const path = require('path');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+
+const helperFunctions = require('./src/helperFunctions')
+
 pool.on('error', (err) => {
     Logger.error('Unexpected error on idle client', err)
 })
@@ -21,7 +25,6 @@ switch (process.env.NODE_ENV) {
         app.use('/packages', express.static(path.join(__dirname, '../PubgTeamPage/packages')));
         app.use('/build', express.static(path.join(__dirname, '../PubgTeamPage/build')));
         app.use('/resources', express.static(path.join(__dirname, '../PubgTeamPage/PubgTeamPage/resources/')));
-        // apiRouter.get('/users_in_session', (req, res) => {res.json(_.values(cachedTokens));});
         break;
 
     default:
@@ -29,33 +32,69 @@ switch (process.env.NODE_ENV) {
         break;
 }
 
-app.get('/matches', function (req, res) {
-    (async () => {
-        const client = await pool.connect()
-        try {
-            const response = await client.query('Select m.map_name, m.match_id, m.created_at as created_at, m.duration as duration, m.game_mode as game_mode, Max(mr.win_place) as finish from pubg.match m join pubg.match_record mr on m.match_id = mr.match_id group by m.match_id order by created_at desc')
-            res.json(response)
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
-        }
-    })().catch(error => logger.log(error))
+app.get('/matches', async function (req, res) {
+    const query = require('./sql/matches/matches.sql')
+    try {
+        let response = await helperFunctions.queryExecute({
+            params: [],
+            pool, 
+            query
+        })
+        res.json(response)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
 })
 
-app.get('/matches/:match_id', (req, res) => {
-    (async () => {
-        const client = await pool.connect()
-        try {
-            let query = 'select * from pubg.match_record where match_id = $1'
-            const response = await client.query(query, [req.params.match_id])
-            res.json(response)
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
+app.get('/matches/:match_id', async (req, res) => {
+    const query = require('./sql/matches/match_details_single.sql')
+    try {
+        let response = await helperFunctions.queryExecute({
+            params: [req.params.match_id],
+            pool, 
+            query
+        })
+        res.json(response)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
+})
+
+app.get('/matches/:match_id/players', async (req, res) => {
+    const query = require('./sql/matches/match_players.sql')
+    try {
+        let response = await helperFunctions.queryExecute({
+            params: [req.params.match_id],
+            pool, 
+            query
+        })
+        res.json(response)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
+})
+
+app.get('/matches/:match_id/players/:player_id', async (req, res) => {
+    const attackQuery = require('./sql/matches/match_player_details_attack.sql')
+    const defenseQuery = require('./sql/matches/match_player_details_defense.sql')
+    const params = [req.params.match_id, req.params.player_id]
+    try {
+        let response = {
+            attackInfo: await helperFunctions.queryExecute({
+                params,
+                pool, 
+                query: attackQuery
+            }),
+            defenseInfo: await helperFunctions.queryExecute({
+                params,
+                pool, 
+                query: defenseQuery
+            })
         }
-    })().catch(error => logger.log(error))
+        res.json([response])
+    } catch (err) {
+        res.status(500).send({ err })
+    }
 })
 
 app.get('/match_records/:player_id', function (req, res) {
