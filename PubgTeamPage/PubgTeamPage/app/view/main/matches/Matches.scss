@@ -1,0 +1,49 @@
+.matches {
+    float: left;    
+    padding: 8px;
+    margin: 8px 8px 4px 8px;
+    text-align: center;
+}
+
+.match-player-attck-defense {
+    float: left;
+}
+
+.match-name {
+    text-align: center;
+}
+
+.match-map-img {
+    height: 150px;
+    widows: 150px;
+}
+
+.modeFinish {
+    display: inline;
+    margin-right: 5px
+}
+
+.numberCircle {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+}
+
+.matchInfo {
+    margin: 10px
+}
+
+.spanInfo {
+    display: inline;
+}
+
+
+.match-stats-panel {
+    margin-left: 10px
+}
