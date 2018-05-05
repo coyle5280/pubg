@@ -8,12 +8,13 @@ module.exports = {
         }
     },
     "globals": {
-        "Ext": true
+        "Ext": true,
+        "moment": true
     },
     "plugins": ["promise"],
     "rules": {
         "comma-dangle": "error",
-        "indent": "error",
+        "indent": ["error", 4, { "SwitchCase": 1 }],
         "eqeqeq": "error",
         "no-debugger": "error",
         "quotes": ["error", "single"],
