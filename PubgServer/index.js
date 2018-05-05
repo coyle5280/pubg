@@ -252,40 +252,27 @@ app.get('/players', (req, res) => {
     })().catch(error => logger.log(error))
 })
 
-app.get('/players/:player_id/stats', (req, res) => {
-    (async () => {
-        const client = await pool.connect()
-        try {
-            let query = `
-            Select 
-                Avg(kills) as avg_kills, 
-                Avg(dbnos) as avg_dbnos, 
-                Avg(assists) as avg_assists,
-                Avg(damage_dealt) as avg_damage_dealt,
-                Avg(head_shot_kills) as avg_head_shot_kills,
-                Avg(heals) as avg_heals,
-                Avg(boosts) as avg_boosts,
-                Max(longest_kill) as longest_kill,
-                Max(kills) as most_kills_in_any_match,
-                Max(kill_streaks) as highest_kill_streak,
-                Max(revives) as most_revives_in_match,
-                Max(heals) as most_heals_in_match,
-                Max(boosts) as most_boosts,
-                Max(ride_distance) as longest_ride,
-                Sum(vehicle_destroys) as total_vehicles_destroyed
-            FROM
-                pubg.match_record
-            Where
-                player_id = $1
-            `
-            const response = await client.query(query, [req.params.player_id])
-            res.json(response)
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
-        }
-    })().catch(error => logger.log(error))
+app.get('/players/:player_id', async (req, res) => {
+    const playerStats1 = require('./sql/players/player_stats_1.sql')
+    const playerStats2 = require('./sql/players/player_stats_2.sql')
+    const params = [req.params.player_id]
+    try {
+        let playerStats1Result = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query: playerStats1
+        })
+        let response = Object.assign({}, playerStats1Result[0])
+        let playerStats2Result = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query: playerStats2
+        })
+        response = Object.assign(response, playerStats2Result[0])
+        res.json([response])
+    } catch (err) {
+        res.status(500).send({ err })
+    }
 })
 
 app.get('/players/avgs', (req, res) => {
