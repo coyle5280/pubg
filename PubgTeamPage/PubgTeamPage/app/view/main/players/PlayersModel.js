@@ -1,7 +1,21 @@
 Ext.define('PubgTeamPage.view.main.players.PlayersModel', {
     alias: 'viewmodel.players',
+    data:{
+        playersId: null
+    },
     extend: 'Ext.app.ViewModel',
     stores: {
+        playerStats: {
+            proxy: {
+                reader: {
+                    type: 'json'
+                },
+                type: 'rest',
+                url: Ext.manifest.envSettings.url + '/players/{playerId}'
+            },
+            storeId: 'players',
+            type: 'store'
+        },
         players: {
             autoLoad: true,
             proxy: {
@@ -13,7 +27,6 @@ Ext.define('PubgTeamPage.view.main.players.PlayersModel', {
                 type: 'rest',
                 url: Ext.manifest.envSettings.url + '/players'
             },
-            
             storeId: 'players',
             type: 'store'
         }

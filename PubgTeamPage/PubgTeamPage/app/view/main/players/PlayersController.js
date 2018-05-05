@@ -7,6 +7,11 @@ Ext.define('PubgTeamPage.view.main.players.PlayersController', {
     extend: 'Ext.app.ViewController',
     
     playerSelect: function (DataViewModel, record) {
-        // debuggerdebugger
+        let vm = this.getViewModel()
+        vm.set({
+            playerId: record.getData().player_id
+        })
+        vm.notify()
+        this.getStore('playerStats').load()
     }
 });
