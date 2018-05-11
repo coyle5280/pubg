@@ -16,6 +16,7 @@
      *      ]
      */
     "requires": [
+        "charts",
         "font-awesome"
     ],
 
@@ -204,6 +205,9 @@
      */
     "js": [
         {
+            "path": "./resources/leaflet.js"
+        },
+        {
             "path": "./resources/moment.min.js"
         },
         {
@@ -251,6 +255,8 @@
             "path": "${build.out.css.path}",
             "bundle": true,
             "exclude": ["fashion"]
+        }, {
+            "path": "./resources/leaflet.css"
         }
     ],
 
