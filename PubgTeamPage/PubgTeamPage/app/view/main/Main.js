@@ -6,13 +6,18 @@ Ext.define('PubgTeamPage.view.main.Main', {
         title: 'Players',
         xtype: 'players'
     }, {
-        iconCls: 'x-fa fa-map',
+        iconCls: 'x-fa fa-keyboard',
         title: 'Matches',
         xtype: 'matches'
     }, {
         iconCls: 'x-fa fa-trophy',
         title: 'Records',
         xtype: 'records'
+    }, {
+        iconCls: 'x-fa fa-map',
+        reference: 'maps',
+        title: 'Maps',
+        xtype: 'maps'
     }],
     requires: [
         'Ext.plugin.Viewport',
