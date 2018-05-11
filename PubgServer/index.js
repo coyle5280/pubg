@@ -8,6 +8,8 @@ const { Logger } = require('../Logger/Logger')
 const path = require('path');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const mime = require('mime');
+const fs = require('fs');
 
 const helperFunctions = require('./src/helperFunctions')
 
@@ -252,9 +254,26 @@ app.get('/players', (req, res) => {
     })().catch(error => logger.log(error))
 })
 
+app.get('/players/charts', async (req, res) => {
+    const query = require(helperFunctions.getChartQuery(req.query.type))
+    const params = []
+    try {
+        let response = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query
+        })
+        res.json(response)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
+})
+
 app.get('/players/:player_id', async (req, res) => {
     const playerStats1 = require('./sql/players/player_stats_1.sql')
     const playerStats2 = require('./sql/players/player_stats_2.sql')
+    const playerStats3 = require('./sql/players/player_stats_3.sql')
+    const playerStats4 = require('./sql/players/player_stats_4.sql')
     const params = [req.params.player_id]
     try {
         let playerStats1Result = await helperFunctions.queryExecute({
@@ -269,7 +288,36 @@ app.get('/players/:player_id', async (req, res) => {
             query: playerStats2
         })
         response = Object.assign(response, playerStats2Result[0])
-        res.json([response])
+        let playerStats3Result = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query: playerStats3
+        })
+        response = Object.assign(response, playerStats3Result[0])
+        let playerStats4Result = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query: playerStats4
+        })
+        response = Object.assign(response, playerStats4Result[0])
+        res.json(response)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
+})
+
+
+
+app.get('/players/:player_id/charts', async (req, res) => {
+    const query = require(helperFunctions.getPlayerChartQuery(req.query.type))
+    const params = [req.params.player_id]
+    try {
+        let response = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query
+        })
+        res.json(response)
     } catch (err) {
         res.status(500).send({ err })
     }
@@ -288,6 +336,27 @@ app.get('/players/avgs', (req, res) => {
             client.release()
         }
     })().catch(error => logger.log(error))
+})
+
+app.get('/tiles/256/:map/:z/:x/:y', (req, res) => {
+    try {
+        const level = helperFunctions.convertLevel(req.params.z)
+        const x = helperFunctions.convertNumber(parseInt(req.params.x) + 1)
+        const y = helperFunctions.convertNumber(parseInt(req.params.y) + 1)
+        
+        var file = `${__dirname}/resources/tiles/${req.params.map}/${level}/${level}_${y}_${x}.png`;
+        res.download(file)
+        // var filename = path.basename(file);
+        // var mimetype = mime.getType(file);
+      
+        // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        // res.setHeader('Content-type', mimetype);
+      
+        // var filestream = fs.createReadStream(file);
+        // filestream.pipe(res);
+    } catch (error) {
+        res.status(500).json(error)
+    }
 })
 
 
