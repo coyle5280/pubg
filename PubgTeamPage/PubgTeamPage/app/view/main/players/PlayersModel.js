@@ -5,6 +5,20 @@ Ext.define('PubgTeamPage.view.main.players.PlayersModel', {
     },
     extend: 'Ext.app.ViewModel',
     stores: {
+        playerChart: {
+            fields: [
+                
+            ],
+            proxy: {
+                reader: {
+                    type: 'json'
+                },
+                type: 'rest',
+                url: ''
+            },
+            storeId: 'playerChart',
+            type: 'store'
+        },
         playerStats: {
             proxy: {
                 reader: {

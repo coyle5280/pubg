@@ -1,4 +1,4 @@
-Ext.define('PubgTeamPage.view.main.Leaderboards.LeaderboardModel', {
+Ext.define('PubgTeamPage.view.main.leaderboards.LeaderboardModel', {
     alias: 'viewmodel.leaderboard',
     extend: 'Ext.app.ViewModel',
     stores: {

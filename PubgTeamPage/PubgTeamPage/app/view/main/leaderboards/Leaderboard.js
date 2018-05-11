@@ -3,7 +3,7 @@ Ext.define('PubgTeamPage.view.main.leaderboards.Leaderboard', {
     extend: 'Ext.view.View',
     requires: [
         'PubgTeamPage.view.main.leaderboards.LeaderboardController',
-        'PubgTeamPage.view.main.Leaderboards.LeaderboardModel'
+        'PubgTeamPage.view.main.leaderboards.LeaderboardModel'
     ],
     scrollable: true,
     viewModel: 'leaderboard',
