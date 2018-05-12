@@ -1,8 +1,7 @@
-
+require('dotenv')
 var fs = require('fs');
 var https = require('https');
 var async = require('async');
-var counter = 0;
 
 var arrayDownloadList = [
     {z:1, x:0, y:0},
@@ -1441,14 +1440,12 @@ var arrayDownloadList = [
 // const mapname = `elevation-miramar`
 // const version = `v4`
 
-const mapname = `savage`
-const version = `v4`
+// const mapname = `savage`
+// const version = `v4`
 
 function downloadAndStoreTileEach (item, callback) {
     var file = fs.createWriteStream(`./${mapname}/${item.z}-${item.x}-${item.y}.png`);
-    // var route = `http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/${item.z}/${item.y}/${item.x}.png`;
-    
-    var route = `https://tiles3-v2.pubgmap.net/tiles/${mapname}/${version}/${item.z}/${item.x}/${item.y}.png`;
+    var route = `${process.env.URL}/${mapname}/${version}/${item.z}/${item.x}/${item.y}.png`;
     var request = https.get(route, function(response) {
         response.pipe(file);
     });
@@ -1465,5 +1462,3 @@ async.eachLimit(arrayDownloadList, 100, downloadAndStoreTileEach, function(err){
         console.log('done!');
     }
 });
-        
-// https://tiles3-v2.pubgmap.net/tiles/elevation-erangel/v8/4/7/8.png
