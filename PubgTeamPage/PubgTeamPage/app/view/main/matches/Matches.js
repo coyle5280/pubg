@@ -15,8 +15,12 @@ Ext.define('PubgTeamPage.view.main.matches.Matches', {
                 <div class="matches">
                     <img class="match-map-img" src="./resources/{map_name}.jpg"/>
                     <div class="matchInfo">
-                        <span class="spanInfo"><p class="modeFinish">{[this.formatGameMode(values.game_mode)]}</p><p class="numberCircle">{finish}</p></span>
+                        <span class="spanInfo"><p class="modeFinish">{[this.formatGameMode(values.game_mode)]}</p></span>
                     </div>
+                    <div clas="match-stats-panel">
+                        <p><i class="fa fa-user" aria-hidden="true"></i>&nbsp;{totalplayers}&nbsp;&nbsp;&nbsp;<i class="fa fa-users" aria-hidden="true"></i>&nbsp;{totalteams} </p>
+                    </div>
+                    <p>{finish}</p>
                 </div>
             </tpl>
         `, {
