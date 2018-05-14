@@ -8,8 +8,6 @@ const { Logger } = require('../Logger/Logger')
 const path = require('path');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-const mime = require('mime');
-const fs = require('fs');
 
 const helperFunctions = require('./src/helperFunctions')
 
@@ -98,21 +96,6 @@ app.get('/matches/:match_id/players/:player_id', async (req, res) => {
         res.status(500).send({ err })
     }
 })
-
-// app.get('/match_records/:player_id', function (req, res) {
-//     (async () => {
-//         const client = await pool.connect()
-//         try {
-//             let query = 'SELECT * FROM pubg.match_record where player_id = $1'
-//             const response = await client.query(query, [req.params.player_id])
-//             res.json(response)
-//         } catch(error) {
-//             logger.log('error', error)
-//         } finally {
-//             client.release()
-//         }
-//     })().catch(error => logger.log(error))
-// })
 
 app.get('/records', async (req, res) => {
     var longest_kill = require('./sql/records/longest_kill.sql')
@@ -256,8 +239,6 @@ app.get('/players/:player_id', async (req, res) => {
     }
 })
 
-
-
 app.get('/players/:player_id/charts', async (req, res) => {
     const query = require(helperFunctions.getPlayerChartQuery(req.query.type))
     const params = [req.params.player_id]
@@ -273,21 +254,6 @@ app.get('/players/:player_id/charts', async (req, res) => {
     }
 })
 
-app.get('/players/avgs', (req, res) => {
-    (async () => {
-        const client = await pool.connect()
-        try {
-            let query = 'Select * from player'
-            const response = await client.query(query, [])
-            res.json(response)
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
-        }
-    })().catch(error => logger.log(error))
-})
-
 app.get('/tiles/256/:map/:z/:x/:y', (req, res) => {
     try {
         res.download(path.join(__dirname, `../PubgTiles/${req.params.map}/${req.params.z}-${req.params.x}-${req.params.y}.png`))
@@ -296,7 +262,6 @@ app.get('/tiles/256/:map/:z/:x/:y', (req, res) => {
     }
 })
 
-
 app.listen('80', function () {
-    logger.log('PSS API listening on port:', '80')
+    logger.log('PubgAnalytics API listening on port:', '80')
 })
