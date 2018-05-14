@@ -5,16 +5,46 @@ Ext.define('PubgTeamPage.view.main.players.PlayersModel', {
     },
     extend: 'Ext.app.ViewModel',
     stores: {
-        playerChart: {
-            fields: [
-                
-            ],
+        playerChartDbnos: {
             proxy: {
                 reader: {
                     type: 'json'
                 },
                 type: 'rest',
-                url: ''
+                url: `${Ext.manifest.envSettings.url}/players/{playerId}/charts?type=dbnos`
+            },
+            storeId: 'playerChart',
+            type: 'store'
+        },
+        playerChartKills: {
+            proxy: {
+                reader: {
+                    type: 'json'
+                },
+                type: 'rest',
+                url: `${Ext.manifest.envSettings.url}/players/{playerId}/charts?type=kills`
+            },
+            storeId: 'playerChart',
+            type: 'store'
+        },
+        playerChartAssits: {
+            proxy: {
+                reader: {
+                    type: 'json'
+                },
+                type: 'rest',
+                url: `${Ext.manifest.envSettings.url}/players/{playerId}/charts?type=assists`
+            },
+            storeId: 'playerChart',
+            type: 'store'
+        },
+        playerChartRevives: {
+            proxy: {
+                reader: {
+                    type: 'json'
+                },
+                type: 'rest',
+                url: `${Ext.manifest.envSettings.url}/players/{playerId}/charts?type=revives`
             },
             storeId: 'playerChart',
             type: 'store'

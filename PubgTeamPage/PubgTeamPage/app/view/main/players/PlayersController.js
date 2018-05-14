@@ -20,13 +20,17 @@ Ext.define('PubgTeamPage.view.main.players.PlayersController', {
         })
         vm.notify()
         this.getStore('playerStats').load()
-        this.setPlayerChart(record.getData().player_id)
+        this.getStore('playerChartKills').load()
+        this.getStore('playerChartDbnos').load()
+        this.getStore('playerChartAssits').load()
+        this.getStore('playerChartRevives').load()
+        // this.setPlayerChart(record.getData().player_id)
     },
 
-    setPlayerChart: function (id) {
-        this.getStore('playerChart').getProxy().setUrl(`${Ext.manifest.envSettings.url}/players/${id}/charts?type=kills`)
-        this.getStore('playerChart').load()
-    },
+    // setPlayerChart: function (id) {
+    //     this.getStore('playerChart').getProxy().setUrl(`${Ext.manifest.envSettings.url}/players/${id}/charts?type=kills`)
+    //     this.getStore('playerChart').load()
+    // },
 
     
 

@@ -50,55 +50,85 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
         height: '100%',
         xtype: 'dataview'
     },{
-        // bind: {
-        //     store: '{playerChart}'
-        // },
-        // width: '80%',
-        // height: '100%',
-        // xtype: 'playerstatschart'
         xtype: 'container',
         width: '80%',
         height: '100%',
-        layout: 'hbox',
+        layout: 'vbox',
         items: [{
             xtype: 'container',
             height: '50%',
             width: '100%',
-            layout: 'vbox',
+            layout: 'hbox',
             items: [{
                 bind: {
-                    store: '{playerChart}'
+                    store: '{playerChartKills}'
                 },
                 height: '100%',
                 width: '50%',
-                xtype: 'playerstatschart'
+                xtype: 'playerstatschart',
+                sprites: [{
+                    type: 'text',
+                    text: 'Kills by Month',
+                    fontSize: 22,
+                    width: 100,
+                    height: 30,
+                    x: 40, // the sprite x position
+                    y: 20  // the sprite y position
+                }]
             },{
                 bind: {
-                    store: '{playerChart}'
+                    store: '{playerChartDbnos}'
                 },
                 height: '100%',
                 width: '50%',
-                xtype: 'playerstatschart'
+                xtype: 'playerstatschart',
+                sprites: [{
+                    type: 'text',
+                    text: 'Dbnos by month',
+                    fontSize: 22,
+                    width: 100,
+                    height: 30,
+                    x: 40, // the sprite x position
+                    y: 20  // the sprite y position
+                }]
             }]
         },{
             xtype: 'container',
             height: '50%',
             width: '100%',
-            layout: 'vbox',
+            layout: 'hbox',
             items: [{
                 bind: {
-                    store: '{playerChart}'
+                    store: '{playerChartAssits}'
                 },
                 height: '100%',
                 width: '50%',
-                xtype: 'playerstatschart'
+                xtype: 'playerstatschart',
+                sprites: [{
+                    type: 'text',
+                    text: 'Assists by month',
+                    fontSize: 22,
+                    width: 100,
+                    height: 30,
+                    x: 40, // the sprite x position
+                    y: 20  // the sprite y position
+                }]
             },{
                 bind: {
-                    store: '{playerChart}'
+                    store: '{playerChartRevives}'
                 },
                 height: '100%',
                 width: '50%',
-                xtype: 'playerstatschart'
+                xtype: 'playerstatschart',
+                sprites: [{
+                    type: 'text',
+                    text: 'Revives by month',
+                    fontSize: 22,
+                    width: 100,
+                    height: 30,
+                    x: 40, // the sprite x position
+                    y: 20  // the sprite y position
+                }]
             }]
         }]
     }]

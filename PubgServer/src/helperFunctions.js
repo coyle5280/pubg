@@ -4,7 +4,10 @@ const chartQuery = {
 }
 
 const chartPlayerQuery = {
-    kills: './sql/players/charts/player_chart_kills.sql'
+    assists: './sql/players/charts/player_chart_assists.sql',
+    dbnos: './sql/players/charts/player_chart_kills.sql',
+    kills: './sql/players/charts/player_chart_dbnos.sql',
+    revives: './sql/players/charts/player_chart_revives.sql'
 }
 
 
