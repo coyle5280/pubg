@@ -1,4 +1,11 @@
 Ext.define('PubgTeamPage.view.main.maps.MapBase', {
+    add: function (layer) {
+        var map = this.getMap();
+        if (map) {
+            map.addLayer(layer);
+        }
+        return layer;
+    },
     extend: 'Ext.Component',
     xtype: 'basemapclass',
     config: {
@@ -44,6 +51,22 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
         // this.createMap()
     },
 
+
+    swapBasemap: function () {
+        let url
+        this.baseLayer.remove()
+        url = (this.baseLayerType === 'contour') ? `${Ext.manifest.envSettings.url}/tiles/256/${this.mapName}/{z}/{x}/{y}` : `${Ext.manifest.envSettings.url}/tiles/256/elevation-${this.mapName}/{z}/{x}/{y}`
+        this.baseLayerType = (this.baseLayerType === 'contour') ? 'regular' : 'contour'
+        this.baseLayer = L.tileLayer(url, {
+            attribution: '',
+            maxZoom: 5,
+            minZoom: 2,
+            id: 'pubg.satellite',
+            noWrap: true
+        });
+        this.baseLayer.addTo(this.getMap());
+    },
+
     createMap: function () {
         var bounds = this.getBounds(),
             queue = this.queue,
@@ -53,15 +76,11 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
             map = L.map(this.getId(), {
                 zoom: this.getZoom(),
                 zoomControl: true,
-                // maxBounds: [
-                //     [-90, -180],
-                //     [130, 270]
-                // ],
-                // maxBoundsViscosity: 0.9,
-                center: this.getCenter() || [0, 0],
+                crs: L.CRS.Simple,
+                center: [-128, 128],
                 attributionControl: false
             });
-
+            this.baseLayerType = 'regular' 
             this.setMap(map);
             this.baseLayer = L.tileLayer(`${Ext.manifest.envSettings.url}/tiles/256/${this.mapName}/{z}/{x}/{y}`, {
                 attribution: '',
@@ -71,30 +90,6 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
                 noWrap: true
             });
             this.baseLayer.addTo(map);
-
-            // if (queue) {
-            //     for (i = 0, len = queue.length; i < len; i++) {
-            //         map.addLayer(queue[i]);
-            //     }
-            //     delete this.queue;
-            // }
-            // if (this.getPin()) {
-            //     if (this.lookupViewModel().get('activeData.img_url')) {
-            //         var smallIcon = L.icon({
-            //             iconSize: [27, 27],
-            //             popupAnchor: [1, -24],
-            //             className: 'circle-icon',
-            //             iconUrl: this.lookupViewModel().get('activeData.img_url')
-            //         });
-            //         this.getLayers()['personnel'] = L.marker(this.lookupViewModel().get('mapCenter'), {
-            //             icon: smallIcon
-            //         }).addTo(map);
-            //     } else {
-            //         if (this.lookupViewModel().get('mapCenter')) {
-            //             this.getLayers()['personnel'] = L.marker(this.lookupViewModel().get('mapCenter')).addTo(map);
-            //         }
-            //     }
-            // }
             map.on('moveend', this.moveend, this);
 
 
@@ -116,13 +111,7 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
         }
     },
 
-    add: function (layer) {
-        var map = this.getMap();
-        if (map) {
-            map.addLayer(layer);
-        }
-        return layer;
-    },
+    
 
     mapClick: function (e) {
         this.fireEvent('mapclick', this, e.latlng, e);
