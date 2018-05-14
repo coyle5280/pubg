@@ -147,3 +147,19 @@ where
 And
 	victim_id not in ('account.4c6f9196c2324007b3b25c330b75fc76', 'account.d3a793b22577494b8ceb696c7e750ec0', 'account.dabd3eddfda0462d9f881260b26d8eae', 'na')
 GROUP BY attacker_account_id, attacker_name
+
+
+SELECT 
+	count(*) as count
+FROM  
+    pubg.match_attack_damage mad
+where
+	attacker_account_id = 'account.b528e5b410294a45821dd8678d2acb9c'
+And
+	victim_id not in ('account.b528e5b410294a45821dd8678d2acb9c','account.4c6f9196c2324007b3b25c330b75fc76', 'account.d3a793b22577494b8ceb696c7e750ec0', 'account.dabd3eddfda0462d9f881260b26d8eae', 'na')
+And
+	damage = victim_health
+And
+	damage != 0
+GROUP BY victim_name
+order by count desc
