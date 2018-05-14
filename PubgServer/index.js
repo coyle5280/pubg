@@ -99,159 +99,109 @@ app.get('/matches/:match_id/players/:player_id', async (req, res) => {
     }
 })
 
-app.get('/match_records/:player_id', function (req, res) {
-    (async () => {
-        const client = await pool.connect()
-        try {
-            let query = 'SELECT * FROM pubg.match_record where player_id = $1'
-            const response = await client.query(query, [req.params.player_id])
-            res.json(response)
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
+// app.get('/match_records/:player_id', function (req, res) {
+//     (async () => {
+//         const client = await pool.connect()
+//         try {
+//             let query = 'SELECT * FROM pubg.match_record where player_id = $1'
+//             const response = await client.query(query, [req.params.player_id])
+//             res.json(response)
+//         } catch(error) {
+//             logger.log('error', error)
+//         } finally {
+//             client.release()
+//         }
+//     })().catch(error => logger.log(error))
+// })
+
+app.get('/records', async (req, res) => {
+    var longest_kill = require('./sql/records/longest_kill.sql')
+    var most_kills = require('./sql/records/most_kills.sql')
+    var most_revives = require('./sql/records/most_revives.sql')
+    var most_assists = require('./sql/records/most_assists.sql')
+    let result = {}
+    try {
+        result = {
+            longest_kill_duo: await helperFunctions.queryExecute({
+                params: ['duo-fpp'],
+                pool, 
+                query: longest_kill
+            }),
+            longest_kill_squad: await helperFunctions.queryExecute({
+                params: ['squad-fpp'],
+                pool, 
+                query: longest_kill
+            }),
+            longest_kill_solo: await helperFunctions.queryExecute({
+                params: ['solo-fpp'],
+                pool, 
+                query: longest_kill
+            }),
+            most_kills_duo: await helperFunctions.queryExecute({
+                params: ['duo-fpp'],
+                pool, 
+                query: most_kills
+            }),
+            most_kills_squad: await helperFunctions.queryExecute({
+                params: ['squad-fpp'],
+                pool, 
+                query: most_kills
+            }),
+            most_kills_solo: await helperFunctions.queryExecute({
+                params: ['solo-fpp'],
+                pool, 
+                query: most_kills
+            }),
+            most_revives_duo: await helperFunctions.queryExecute({
+                params: ['duo-fpp'],
+                pool, 
+                query: most_revives
+            }),
+            most_revives_squad: await helperFunctions.queryExecute({
+                params: ['squad-fpp'],
+                pool, 
+                query: most_revives
+            }),
+            most_revives_solo: await helperFunctions.queryExecute({
+                params: ['solo-fpp'],
+                pool, 
+                query: most_revives
+            }),
+            most_assists_duo: await helperFunctions.queryExecute({
+                params: ['duo-fpp'],
+                pool, 
+                query: most_assists
+            }),
+            most_assists_squad: await helperFunctions.queryExecute({
+                params: ['squad-fpp'],
+                pool, 
+                query: most_assists
+            }),
+            most_assists_solo: await helperFunctions.queryExecute({
+                params: ['solo-fpp'],
+                pool, 
+                query: most_assists
+            })
         }
-    })().catch(error => logger.log(error))
+        res.json(result)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
 })
 
-app.get('/records', function (req, res) {
-    (async () => {
-        const client = await pool.connect()
-        var results
-        try {
-            // let query = `select * from pubg.match_record mr 
-            //     Join pubg.match m on mr.match_id = m.match_id 
-            //     where ${req.query.field} = (select max(${req.query.field}) from pubg.match_record mr Join pubg.match m on mr.match_id = m.match_id where m.game_mode = ${req.query.mode})`
-            // const response = await client.query(query, [])
-            let record_data = {}
-            let query_kills = `
-                Select 
-                    mr.name as most_kill_name, 
-                    mr.kills
-                from 
-                    pubg.match_record mr
-                join 
-                    pubg.match m
-                on
-                    mr.match_id = m.match_id
-                where 
-                    mr.kills = (
-                        select 
-                            Max(kills) as kills 
-                        from 
-                            pubg.match_record
-                    )
-                And 
-                    m.game_mode = 'duo-fpp'
-                group by 
-                    mr.name,
-                    mr.kills
-            `
-            results = await client.query(query_kills, [])
-            record_data.kills = results.rows
-            let query_kills_all = `
-                Select 
-                    mr.name as most_kill_name, 
-                    mr.kills
-                from 
-                    pubg.match_record mr
-                join 
-                    pubg.match m
-                on
-                    mr.match_id = m.match_id
-                where 
-                    mr.kills = (
-                        select 
-                            Max(kills) as kills 
-                        from 
-                            pubg.match_record
-                    )
-                group by 
-                    mr.name,
-                    mr.kills
-            `
-            results = await client.query(query_kills_all, [])
-            record_data.kills_all = results.rows
-            let query_assists_all = `
-                Select 
-                    mr.name as most_kill_name, 
-                    mr.kills
-                from 
-                    pubg.match_record mr
-                join 
-                    pubg.match m
-                on
-                    mr.match_id = m.match_id
-                where 
-                    mr.kills = (
-                        select 
-                            Max(kills) as kills 
-                        from 
-                            pubg.match_record
-                    )
-                group by 
-                    mr.name,
-                    mr.kills
-            `
-            results = await client.query(query_assists_all, [])
-            record_data.kills_all = results.rows
-            let query_assists_duo = `
-                Select 
-                    mr.name as name, 
-                    mr.assists
-                from 
-                    pubg.match_record mr
-                join 
-                    pubg.match m
-                on
-                    mr.match_id = m.match_id
-                where 
-                    mr.assists = (
-                        select 
-                            Max(assists) as assists 
-                        from 
-                            pubg.match_record
-                    )
-                And 
-                    m.game_mode = 'duo-fpp'
-                group by 
-                    mr.name,
-                    mr.assists
-            `
-            results = await client.query(query_assists_duo, [])
-            record_data.query_assists_duo =results.rows
-            let total_kills = `
-                Select SUM(kills) as total, name from pubg.match_record group By name order by total desc limit 1
-            `
-            results = await client.query(total_kills, [])
-            record_data.total_kills = results.rows
-            let head_shot_kills = `
-                Select SUM(head_shot_kills) as total, name from pubg.match_record group By name order by total desc limit 1
-            `
-            results = await client.query(head_shot_kills, [])
-            record_data.head_shot_kills = results.rows
-            res.json([record_data])
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
-        }
-    })().catch(error => logger.log(error))
-})
-
-app.get('/players', (req, res) => {
-    (async () => {
-        const client = await pool.connect()
-        try {
-            let query = 'Select * from pubg.player'
-            const response = await client.query(query, [])
-            res.json(response)
-        } catch(error) {
-            logger.log('error', error)
-        } finally {
-            client.release()
-        }
-    })().catch(error => logger.log(error))
+app.get('/players', async (req, res) => {
+    const query = require('./sql/players/players.sql')
+    const params = []
+    try {
+        let response = await helperFunctions.queryExecute({
+            params,
+            pool, 
+            query
+        })
+        res.json(response)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
 })
 
 app.get('/players/charts', async (req, res) => {
@@ -340,20 +290,7 @@ app.get('/players/avgs', (req, res) => {
 
 app.get('/tiles/256/:map/:z/:x/:y', (req, res) => {
     try {
-        const level = helperFunctions.convertLevel(req.params.z)
-        const x = helperFunctions.convertNumber(parseInt(req.params.x) + 1)
-        const y = helperFunctions.convertNumber(parseInt(req.params.y) + 1)
-        
-        var file = `${__dirname}/resources/tiles/${req.params.map}/${level}/${level}_${y}_${x}.png`;
-        res.download(file)
-        // var filename = path.basename(file);
-        // var mimetype = mime.getType(file);
-      
-        // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-        // res.setHeader('Content-type', mimetype);
-      
-        // var filestream = fs.createReadStream(file);
-        // filestream.pipe(res);
+        res.download(path.join(__dirname, `../PubgTiles/${req.params.map}/${req.params.z}-${req.params.x}-${req.params.y}.png`))
     } catch (error) {
         res.status(500).json(error)
     }
