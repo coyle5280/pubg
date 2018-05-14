@@ -10,8 +10,9 @@ Ext.define('PubgTeamPage.view.main.players.PlayersController', {
     },
 
     onSeriesTooltipRender: function (tooltip, record) {
-        tooltip.setHtml(record.get('month1') + ': ' + record.get('data1') + '%');
+        tooltip.setHtml(record.get('month1') + ': ' + record.get('data1'));
     },
+    
     playerSelect: function (DataViewModel, record) {
         let vm = this.getViewModel()
         vm.set({
