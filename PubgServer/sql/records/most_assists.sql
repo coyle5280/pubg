@@ -12,7 +12,14 @@ where
         select 
             Max(assists) as assists 
         from 
-            pubg.match_record
+			pubg.match_record mr
+		Join
+			pubg.match m
+		On
+			m.match_id = mr.match_id
+		Where
+			m.game_mode = $1
+    	)
     )
 And 
     m.game_mode = $1
