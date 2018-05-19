@@ -20,7 +20,6 @@ where
 		Where
 			m.game_mode = $1
     	)
-    )
 And 
     m.game_mode = $1
 group by 
