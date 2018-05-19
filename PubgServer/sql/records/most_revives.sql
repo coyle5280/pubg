@@ -8,7 +8,7 @@ join
 on
     mr.match_id = m.match_id
 where 
-    mr.kills = (
+    mr.revives = (
         select 
             Max(revives) as revives 
         from 
