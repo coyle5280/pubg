@@ -1,0 +1,1 @@
+select game_mode as mode from pubg.match group by game_mode
