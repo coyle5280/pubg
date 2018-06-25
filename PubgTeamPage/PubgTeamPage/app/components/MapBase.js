@@ -1,4 +1,4 @@
-Ext.define('PubgTeamPage.view.main.maps.MapBase', {
+Ext.define('PubgTeamPage.components.MapBase', {
     add: function (layer) {
         var map = this.getMap();
         if (map) {
@@ -9,17 +9,17 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
     extend: 'Ext.Component',
     xtype: 'basemapclass',
     config: {
-        map: null,
-        currentLocation: null,
         baseLayer: null,
-        layers: {},
-        layersQueue: [],
-        zoom: 1,
-        currentBaseLayer: null,
         bounds: null,
         center: [0,0],
+        currentBaseLayer: null,
+        currentLocation: null,
+        layers: {},
+        layersQueue: [],
+        map: null,
         pin: null,
-        pinImgUrl: null
+        pinImgUrl: null,
+        zoom: 1
     },
 
     listeners: {
@@ -45,12 +45,6 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
             map.fitBounds(bounds, fitBoundsOptions);
         }
     },
- 
-    initComponent: function () {
-        this.callParent(arguments)
-        // this.createMap()
-    },
-
 
     swapBasemap: function () {
         let url
@@ -85,6 +79,7 @@ Ext.define('PubgTeamPage.view.main.maps.MapBase', {
             this.baseLayer = L.tileLayer(`${Ext.manifest.envSettings.url}/tiles/256/${this.mapName}/{z}/{x}/{y}`, {
                 attribution: '',
                 maxZoom: 5,
+                maxBounds: [[-256,0],[0, 256]],
                 minZoom: 2,
                 id: 'pubg.satellite',
                 noWrap: true

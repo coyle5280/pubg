@@ -4,7 +4,7 @@
     "version": "1.0.0.0",
     "framework": "ext",
     "toolkit": "classic",
-    "theme": "theme-triton",
+    "theme": "pubg",
 
     /**
      * The list of required packages (with optional versions; default is "latest").
@@ -209,6 +209,12 @@
         },
         {
             "path": "./resources/moment.min.js"
+        },
+        {
+            "path": "./resources/leaflet-heat.js"
+        },
+        {
+            "path": "./resources/leaflet-bubble.js"
         },
         {
             "path": "./resources/moment-timezone-with-data-2012-2022.min.js"

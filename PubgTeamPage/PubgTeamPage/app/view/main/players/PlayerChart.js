@@ -33,7 +33,8 @@ Ext.define('PubgTeamPage.view.main.players.PlayerChart', {
             rotate: {
                 degrees: -45
             }
-        }
+        },
+        renderer: 'onXAxisLabelRender'
     }],
     series: [{
         type: 'bar',

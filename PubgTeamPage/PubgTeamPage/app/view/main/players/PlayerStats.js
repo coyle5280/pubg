@@ -12,8 +12,9 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
         tpl: new Ext.XTemplate(`
             <tpl for=".">
                 <h3 class="playerStatsHeader">Career Stats</h3>
-                <div class="playerStats">'
-                    <p>Kills {total_kills} </p> 
+                <div class="playerStats">
+                    <p>Total Kills {total_kills} </p> 
+                    <p>Kills Per Round {[this.divide(values.total_matches, values.total_kills)]} </p> 
                     <p>Accuracy {[this.average(values.total_shots, values.total_hits)]} </p> 
                     <p>Dbnos {total_dbnpos} </p> 
                     <p>Assists {total_assists} </p> 
@@ -31,6 +32,9 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
         `,{
             average: function(v1, v2) {
                 return `${(v2/v1).toFixed(2).replace(/0\./,'')}%`
+            },
+            divide: function(v1, v2) {
+                return `${(v2/v1).toFixed(2)}`
             },
             format: function(value) {
                 return `${value}m`
@@ -68,7 +72,7 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
                 xtype: 'playerstatschart',
                 sprites: [{
                     type: 'text',
-                    text: 'Kills by Month',
+                    text: 'Kills',
                     fontSize: 22,
                     width: 100,
                     height: 30,
@@ -84,7 +88,7 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
                 xtype: 'playerstatschart',
                 sprites: [{
                     type: 'text',
-                    text: 'Dbnos by month',
+                    text: 'Dbnos',
                     fontSize: 22,
                     width: 100,
                     height: 30,
@@ -106,7 +110,7 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
                 xtype: 'playerstatschart',
                 sprites: [{
                     type: 'text',
-                    text: 'Assists by month',
+                    text: 'Assists',
                     fontSize: 22,
                     width: 100,
                     height: 30,
@@ -122,7 +126,7 @@ Ext.define('PubgTeamPage.view.main.players.PlayerStats', {
                 xtype: 'playerstatschart',
                 sprites: [{
                     type: 'text',
-                    text: 'Revives by month',
+                    text: 'Revives',
                     fontSize: 22,
                     width: 100,
                     height: 30,

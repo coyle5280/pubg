@@ -3,14 +3,17 @@
     padding: 8px;
     margin: 8px 8px 4px 8px;
     text-align: center;
+    width: 20%;
 }
 
 .player-name {
     text-align: center;
+    margin: 0px 0px 5px 0;
 }
 
 .player-img {
     border-radius: 35%;
+    width: 100%;
 }
 
 .playerStats {
@@ -24,4 +27,11 @@
 .playerStatsHeader {
     text-align: center;
     margin: 0;
+}
+
+
+.playerSelected {
+    background-color: black;
+    color: #DFAF20;
+    border-radius: 3px;
 }

@@ -3,12 +3,12 @@ Ext.define('PubgTeamPage.view.main.maps.Maps', {
     extend: 'Ext.tab.Panel',
     items: [{
         iconCls: 'x-fa fa-map',
-        title: 'Miramar',
-        xtype: 'miramarmap'
-    }, {
-        iconCls: 'x-fa fa-map',
         title: 'Erangel',
         xtype: 'erangelmap'
+    }, {
+        iconCls: 'x-fa fa-map',
+        title: 'Miramar',
+        xtype: 'miramarmap'
     }, {
         iconCls: 'x-fa fa-map',
         title: 'Savage',
@@ -18,10 +18,9 @@ Ext.define('PubgTeamPage.view.main.maps.Maps', {
     requires: [
         'PubgTeamPage.view.main.maps.MapController',
         'PubgTeamPage.view.main.maps.MapModel',
-        'PubgTeamPage.view.main.maps.MiramarMap',
-        'PubgTeamPage.view.main.maps.SavageMap',
-        'PubgTeamPage.view.main.maps.ErangelMap'
-
+        'PubgTeamPage.view.main.maps.miramar.MiramarMap',
+        'PubgTeamPage.view.main.maps.savage.SavageMap',
+        'PubgTeamPage.view.main.maps.erangel.ErangelMap'
     ],
     scrollable: true,
     viewModel: 'map',

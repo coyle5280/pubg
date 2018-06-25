@@ -1,4 +1,5 @@
-Ext.define('PubgTeamPage.view.main.maps.SavageMap', {
+Ext.define('PubgTeamPage.view.main.maps.savage.SavageMap', {
+    controller: 'savagemap',
     extend: 'Ext.panel.Panel',
     items: [{
         cls: 'mapbk',
@@ -27,8 +28,16 @@ Ext.define('PubgTeamPage.view.main.maps.SavageMap', {
         }
     },
     mapName: 'savage',
+    requires: [
+        'PubgTeamPage.view.main.maps.playerOptions',
+        'PubgTeamPage.view.main.maps.MapsToolBar',
+        'PubgTeamPage.components.MapBase'
+    ],
     swapMap: function () {
         this.down('component').swapBasemap()
+    },
+    viewModel: {
+        type: 'savagemap'
     },
     xtype: 'savagemap'
 })

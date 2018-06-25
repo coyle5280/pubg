@@ -1,5 +1,6 @@
-Ext.define('PubgTeamPage.view.main.maps.ErangelMap', {
+Ext.define('PubgTeamPage.view.main.maps.erangel.ErangelMap', {
     cls: 'mapbk',
+    controller: 'erangelmap',
     extend: 'Ext.panel.Panel',
     items: [{
         cls: 'mapbk',
@@ -13,26 +14,10 @@ Ext.define('PubgTeamPage.view.main.maps.ErangelMap', {
         reference: 'erangelMainMap',
         xtype: 'basemapclass'
     },{
-        cls: 'mapToolsToolbar',
-        floating: true,
-        items: [{
-            height: 30,
-            iconCls: 'x-fa fa-map',
-            listeners: {
-                click: {
-                    fn: 'swapMap'
-                }
-            },
-            width: 30
-        }, {
-            height: 30,
-            iconCls: 'x-fa fa-car',
-            width: 30
-        }],
-        layout: 'vbox',
-        reference: 'erangelToolBar',
-        shadow: false,
-        xtype: 'toolbar'
+        xtype: 'mapstoolbar'
+    },{
+        reference: 'playerOptions',
+        xtype: 'playeroptions'
     }],
     layout: 'fit',
     listeners: {
@@ -41,8 +26,18 @@ Ext.define('PubgTeamPage.view.main.maps.ErangelMap', {
         }
     },
     mapName: 'erangel',
+    requires: [
+        'PubgTeamPage.view.main.maps.erangel.ErangelMapController',
+        'PubgTeamPage.view.main.maps.erangel.ErangelModel',
+        'PubgTeamPage.view.main.maps.playerOptions',
+        'PubgTeamPage.view.main.maps.MapsToolBar',
+        'PubgTeamPage.components.MapBase'
+    ],
     swapMap: function () {
         this.down('component').swapBasemap()
+    },
+    viewModel: {
+        type: 'erangelmap'
     },
     xtype: 'erangelmap'
 })

@@ -12,7 +12,7 @@ Ext.define('PubgTeamPage.view.main.players.Players', {
         },
         tpl: new Ext.XTemplate(`
             <tpl for=".">
-                <div class="players">'
+                <div class="players">
                     <h3 class="player-name">{name}</h3>
                     <img class="player-img" src="./resources/pubg.jpg"/>
                 </div>
